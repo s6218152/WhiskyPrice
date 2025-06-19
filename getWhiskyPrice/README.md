@@ -1,7 +1,6 @@
 # 609 麥卡倫商品爬蟲
 
-本專案是一個簡單的 Python 腳本，負責從 609 官網麥卡倫商品頁面（https://www.609.com.tw/ProductList/%E9%BA%A5%E5%8D%A1%E5%80%AB）
-爬取所有商品的品名與會員價。
+本專案是一個簡單的 Python 腳本，負責從 609 官網麥卡倫商品頁面（https://www.609.com.tw/ProductList/%E9%BA%A5%E5%8D%A1%E5%80%AB）爬取所有商品的品名與會員價。
 
 ## 使用方式
 
