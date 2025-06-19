@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"args": [
+				"hello.py"
+			],
+			"command": "/Users/xiao_mi/sideproject/python/0619/.venv/bin/python",
+			"label": "執行 hello.py",
+			"type": "shell"
+		}
+	]
+}
