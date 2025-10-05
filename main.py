@@ -8,21 +8,44 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import csv
+import requests
+import json
+import urllib.parse
 
-BASE_URLS = [
-    "https://www.609.com.tw/ProductList/%E9%BA%A5%E5%8D%A1%E5%80%AB",
-    "https://www.609.com.tw/ProductList/%E7%99%BE%E5%AF%8C",
-    "https://www.609.com.tw/ProductList/%E7%9A%87%E5%AE%B6%E7%A6%AE%E7%82%AE",
-    "https://www.609.com.tw/ProductList/%E6%85%95%E8%B5%AB",
-    "https://www.609.com.tw/ProductList/%E5%A4%A7%E6%91%A9",
-    "https://www.609.com.tw/ProductList/%E7%B4%84%E7%BF%B0%E8%B5%B0%E8%B7%AF",
-    "https://www.609.com.tw/ProductList/%E6%A0%BC%E8%98%AD%E8%8F%B2%E8%BF%AA",
-    "https://www.609.com.tw/ProductList/%E5%B1%B1%E5%B4%8E",
-    "https://www.609.com.tw/ProductList/%E9%9F%BF",
-    "https://www.609.com.tw/ProductList/%E4%BD%99%E5%B8%82",
-    "https://www.609.com.tw/ProductList/%E6%B3%A2%E6%91%A9",
-    "https://www.609.com.tw/ProductList/%E6%A0%BC%E8%98%AD%E8%B7%AF%E6%80%9D"
-]
+def get_dynamic_urls():
+    """
+    從 609.com.tw 取得品牌資料並動態產生商品列表的 URL。
+    """
+    source_url = "https://www.609.com.tw/Parts/GetBrandList?id=1101%E8%98%87%E6%A0%BC%E8%98%AD"
+    product_base_url = "https://www.609.com.tw/ProductList/"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
+    }
+    
+    base_urls = []
+    
+    try:
+        print("正在動態獲取最新的 URL 列表...")
+        response = requests.get(source_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        brand_names = response.json()
+        
+        if not brand_names:
+            print("注意：從 API 取得的品牌資料為空。")
+            return []
+
+        base_urls = [f"{product_base_url}{urllib.parse.quote(name)}" for name in brand_names]
+        print(f"成功獲取 {len(base_urls)} 個 URL。")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"取得動態 URL 時發生網路錯誤: {e}")
+    except json.JSONDecodeError:
+        print("解析動態 URL 的 JSON 資料時發生錯誤。")
+        
+    return base_urls
+
+BASE_URLS = get_dynamic_urls()
 
 def parse_products(container):
     products = []
